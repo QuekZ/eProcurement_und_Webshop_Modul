@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+<h1>Verhandlungen &amp; Verträge</h1>
+<section class="panel">
+  <h2>Laufende Verhandlungen</h2>
+  <% if (!list.length) { %><p class="muted">Noch keine Verhandlungen. Bei Produkten mit „verhandelbar“ können Sie ein Angebot abgeben.</p><% } else { %>
+  <table class="table">
+    <tr><th>#</th><th>Produkt</th><th>Menge</th><th>Listenpreis</th><th>Aktueller Preis</th><th>Runde</th><th>Status</th></tr>
+    <% list.forEach((n) => { %>
+    <tr>
+      <td><a href="/verhandlungen/<%= n.id %>">#<%= n.id %></a></td><td><%= n.product_name %></td><td><%= n.quantity %></td>
+      <td><%= eur(n.list_price) %></td><td><%= eur(n.current_price) %></td><td><%= n.rounds %></td>
+      <td><span class="status s-<%= n.status %>"><%= n.status %></span></td>
+    </tr>
+    <% }) %>
+  </table>
+  <% } %>
+</section>
+<section class="panel">
+  <h2>Verträge (Kontraktüberwachung)</h2>
+  <% if (!contracts.length) { %><p class="muted">Noch keine Verträge.</p><% } else { %>
+  <table class="table">
+    <tr><th>Vertrag</th><th>Produkt</th><th>Menge</th><th>Stückpreis</th><th>Summe</th><th>Liefertermin</th><th>Status</th><th></th></tr>
+    <% contracts.forEach((k) => { %>
+    <tr>
+      <td><a href="/verhandlungen/vertrag/<%= k.id %>"><%= k.contract_no %></a></td><td><%= k.product_name %></td><td><%= k.quantity %></td>
+      <td><%= eur(k.unit_price) %></td><td><%= eur(k.total) %></td><td><%= date(k.delivery_date) %></td>
+      <td><span class="status s-<%= k.status %>"><%= k.status %></span></td>
+      <td><% if (k.status === 'aktiv') { %><a class="btn small primary" href="/verhandlungen/vertrag/<%= k.id %>/abrufen">Abrufen</a><% } else if (k.order_id) { %><a href="/konto/bestellungen/<%= k.order_id %>">Bestellung</a><% } %></td>
+    </tr>
+    <% }) %>
+  </table>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

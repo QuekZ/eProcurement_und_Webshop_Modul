@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+<h1>Warenkorb</h1>
+<% if (!items.length) { %>
+  <p class="muted">Ihr Warenkorb ist leer. <a href="/produkte">Weiter einkaufen</a></p>
+<% } else { %>
+<div class="grid product-detail">
+  <section class="panel">
+    <table class="table">
+      <tr><th>Produkt</th><th>Art</th><th>Preis</th><th>Menge</th><th class="right">Summe</th></tr>
+      <% items.forEach((i) => { %>
+      <tr>
+        <td><a href="/produkte/<%= i.product.id %>"><%= i.product.name %></a></td>
+        <td><span class="tag type-<%= i.product.object_type %>"><%= OBJECT_TYPES[i.product.object_type] %></span></td>
+        <td><%= eur(i.unit_price) %></td>
+        <td>
+          <form method="post" action="/warenkorb/update" class="inline">
+            <input type="hidden" name="product_id" value="<%= i.product.id %>">
+            <input type="number" name="quantity" value="<%= i.quantity %>" min="0" class="qty">
+            <button class="btn small">↻</button>
+          </form>
+        </td>
+        <td class="right"><%= eur(i.unit_price * i.quantity) %></td>
+      </tr>
+      <% }) %>
+    </table>
+    <p class="small muted">Menge 0 entfernt die Position. Versandkostenfrei für physische Güter ab <%= eur(freeFrom) %>.</p>
+  </section>
+  <aside class="panel">
+    <%- include('partials/totals', { totals }) %>
+    <a class="btn primary block" href="/warenkorb/kasse">Zur Kasse</a>
+  </aside>
+</div>
+<% } %>
+<%- include('partials/footer') %>

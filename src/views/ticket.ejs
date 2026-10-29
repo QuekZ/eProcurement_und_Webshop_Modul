@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+<% if (admin) { %><%- include('partials/admin-nav') %><% } %>
+<p class="small"><a href="<%= admin ? '/admin/tickets' : '/support' %>">← Übersicht</a></p>
+<h1>#<%= ticket.id %> <%= ticket.subject %> <span class="status s-<%= ticket.status %>"><%= ticket.status %></span></h1>
+<p class="muted"><%= ticket.category %><% if (admin) { %> · Kunde: <%= customer.name %> (<%= customer.email %>)<% } %>
+  <% if (order) { %> · Bestellung <a href="<%= admin ? '/admin/bestellungen/' : '/konto/bestellungen/' %><%= order.id %>"><%= order.order_no %></a> (<%= STATUS_LABELS[order.status] %><%= order.tracking_no ? ', ' + order.carrier + ' ' + order.tracking_no : '' %>)<% } %></p>
+<section class="panel">
+  <div class="thread">
+    <% messages.forEach((m) => { %>
+      <div class="msg <%= m.author === 'kunde' ? 'kunde' : 'anbieter' %>">
+        <div class="meta"><%= m.author === 'kunde' ? 'Kunde' : 'Support' %> · <%= datetime(m.created_at) %></div>
+        <p><%= m.body %></p>
+      </div>
+    <% }) %>
+  </div>
+  <% if (ticket.status !== 'geschlossen') { %>
+  <form method="post" class="form">
+    <label>Antwort <textarea name="body" rows="3"></textarea></label>
+    <div class="actions"><button class="btn primary">Senden</button><button class="btn" name="close" value="1">Ticket schließen</button></div>
+  </form>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

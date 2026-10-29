@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · eProcure Shop</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="/">eProcure<span>Shop</span></a>
+    <form class="search" action="/produkte">
+      <input name="q" placeholder="Produkte, SKU, Spezifikation suchen …" value="<%= typeof query !== 'undefined' && query.q ? query.q : '' %>">
+    </form>
+    <nav>
+      <a href="/produkte">Produkte</a>
+      <a href="/partner">Marktpartner</a>
+      <% if (user) { %><a href="/verhandlungen">Verhandlungen</a><% } %>
+      <a href="/support">Support</a>
+      <% if (user && user.role !== 'customer') { %><a href="/admin" class="pill">Backoffice</a><% } %>
+      <a href="/warenkorb">Warenkorb<% if (cartCount) { %> <span class="count"><%= cartCount %></span><% } %></a>
+      <% if (user) { %>
+        <a href="/konto"><%= user.name.split(' ')[0] %></a>
+        <form method="post" action="/logout" class="inline"><button class="link">Abmelden</button></form>
+      <% } else { %>
+        <a href="/login" class="pill">Anmelden</a>
+      <% } %>
+    </nav>
+  </div>
+  <div class="accessbar level-<%= level %>">
+    <div class="wrap">Marktzugang: <strong><%= LEVEL_LABELS[level] %></strong>
+      <% if (!user) { %> · <a href="/registrieren">Registrieren</a> für beschränkte Segmente<% } else if (!user.approved) { %> · Antrag auf „<%= LEVEL_LABELS[user.requested_level] %>“ in Prüfung<% } %>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+<% if (flash) { %><div class="flash <%= flash.type %>"><%= flash.text %></div><% } %>

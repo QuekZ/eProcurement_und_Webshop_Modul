@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+<%- include('../partials/admin-nav') %>
+<h1>Schnittstellen (XML / EDIFACT)</h1>
+<% if (result) { %><div class="flash <%= result.type %>"><%= result.text %></div><% } %>
+<div class="grid2">
+  <form method="post" action="/admin/schnittstellen/xml-import" class="panel form">
+    <h2>XML-Katalogimport</h2>
+    <p class="small muted">Format angelehnt an BMEcat. Vorhandene SKUs werden aktualisiert. <a href="/admin/schnittstellen/katalog.xml">Aktuellen Katalog exportieren</a></p>
+    <textarea name="xml" rows="12" class="mono"><CATALOG>
+  <ARTICLES>
+    <ARTICLE>
+      <SUPPLIER_AID>HW-1004</SUPPLIER_AID>
+      <DESCRIPTION_SHORT>USB-C Dockingstation</DESCRIPTION_SHORT>
+      <DESCRIPTION_LONG>Dockingstation mit 2x HDMI und LAN.</DESCRIPTION_LONG>
+      <OBJECT_TYPE>physical</OBJECT_TYPE>
+      <QUALITY>Standard</QUALITY>
+      <USAGE>Arbeitsplatzausstattung</USAGE>
+      <PRICE currency="EUR">129.00</PRICE>
+      <ACCESS>open</ACCESS>
+      <FEATURES>
+        <FEATURE><FNAME>Anschlüsse</FNAME><FVALUE>2x HDMI, LAN, 3x USB</FVALUE></FEATURE>
+      </FEATURES>
+    </ARTICLE>
+  </ARTICLES>
+</CATALOG></textarea>
+    <button class="btn primary">Importieren</button>
+  </form>
+  <form method="post" action="/admin/schnittstellen/edifact-import" class="panel form">
+    <h2>EDIFACT ORDERS empfangen</h2>
+    <p class="small muted">Simuliert eine eingehende Bestellung aus dem ERP eines Kunden (alternativ per API <code>POST /api/v1/orders/edifact</code>).</p>
+    <label>Kunde <select name="customer_id">
+      <% customers.forEach((c) => { %><option value="<%= c.id %>" <%= c.company === 'Müller GmbH' ? 'selected' : '' %>><%= c.company || c.name %> (<%= LEVEL_LABELS[c.access_level] %>)</option><% }) %></select></label>
+    <textarea name="edifact" rows="12" class="mono"><%= sampleOrders %></textarea>
+    <button class="btn primary">Verarbeiten</button>
+  </form>
+</div>
+<section class="panel">
+  <h2>Nachrichtenprotokoll</h2>
+  <%- include('edi-table', { messages }) %>
+</section>
+<%- include('../partials/footer') %>

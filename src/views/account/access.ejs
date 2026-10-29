@@ -1,0 +1,46 @@
+<%- include('../partials/header') %>
+<h1>Marktzugang &amp; Schnittstellen</h1>
+<div class="grid three">
+  <% ['open', 'restricted', 'closed'].forEach((l) => { %>
+    <div class="panel segment level-<%= l %> <%= l === level ? 'current' : '' %>">
+      <h3><%= LEVEL_LABELS[l] %>er Markt</h3>
+      <p class="small"><%= { open: 'Für alle Besucher sichtbar. Standardsortiment, Zahlung per Karte, PayPal oder Vorkasse.',
+        restricted: 'Für geprüfte Geschäftskunden: B2B-Sortiment, Kauf auf Rechnung, Rahmenverträge.',
+        closed: 'Nur auf Einladung: exklusive Konsortialangebote und Sonderanfertigungen.' }[l] %></p>
+      <% if (l === level) { %><strong>Ihr aktueller Zugang</strong><% } %>
+    </div>
+  <% }) %>
+</div>
+<div class="grid2">
+  <section class="panel">
+    <h2>Zugang erweitern</h2>
+    <% if (!user.approved) { %><p class="flash info">Ihr Antrag auf „<%= LEVEL_LABELS[user.requested_level] %>“ wird geprüft.</p><% } %>
+    <% if (level === 'open') { %>
+    <form method="post" class="form">
+      <h4>Als Geschäftskunde verifizieren</h4>
+      <label>Firma <input name="company" value="<%= user.company || '' %>" required></label>
+      <label>USt-IdNr. <input name="vat_id" value="<%= user.vat_id || '' %>" required></label>
+      <button class="btn">Antrag stellen</button>
+    </form>
+    <% } %>
+    <% if (level !== 'closed') { %>
+    <form method="post" class="form">
+      <h4>Einladungscode einlösen</h4>
+      <label>Code <input name="invite_code" required></label>
+      <button class="btn">Einlösen</button>
+    </form>
+    <% } else { %><p>Sie haben bereits den höchsten Marktzugang.</p><% } %>
+  </section>
+  <section class="panel">
+    <h2>API-Zugang (ERP-Anbindung)</h2>
+    <p class="small">Über die REST-Schnittstelle rufen Sie Kataloge als JSON oder XML ab und übermitteln Bestellungen als UN/EDIFACT ORDERS.</p>
+    <% if (user.api_key) { %><p>Ihr API-Key: <code><%= user.api_key %></code></p><% } %>
+    <form method="post" action="/konto/api-key"><button class="btn"><%= user.api_key ? 'Neuen Key erzeugen' : 'API-Key erzeugen' %></button></form>
+    <pre class="code small">curl -H "X-API-Key: <%= user.api_key || '…' %>" http://localhost:3000/api/v1/catalog.xml
+
+curl -X POST -H "X-API-Key: <%= user.api_key || '…' %>" \
+  -H "Content-Type: application/edifact" \
+  --data-binary @orders.edi http://localhost:3000/api/v1/orders/edifact</pre>
+  </section>
+</div>
+<%- include('../partials/footer') %>

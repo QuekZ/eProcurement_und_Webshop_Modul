@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+<section class="panel narrow">
+  <h1>Einkaufspräferenzen</h1>
+  <p class="muted">Ihre Präferenzen werden mit allen Angeboten gematcht. Produkte mit hoher Übereinstimmung erscheinen als Empfehlung; im Katalog sehen Sie den Match-Score.</p>
+  <form method="post" class="form">
+    <label>Bevorzugte Kategorie <select name="category_id"><option value="">egal</option>
+      <% categories.forEach((c) => { %><option value="<%= c.id %>" <%= prefs.category_id == c.id ? 'selected' : '' %>><%= c.name %></option><% }) %></select></label>
+    <label>Güterart <select name="object_type"><option value="">egal</option>
+      <% Object.entries(OBJECT_TYPES).forEach(([k, v]) => { %><option value="<%= k %>" <%= prefs.object_type === k ? 'selected' : '' %>><%= v %></option><% }) %></select></label>
+    <label>Budget pro Stück (€) <input type="number" name="max_price" value="<%= prefs.max_price || '' %>"></label>
+    <label>Mindestqualität <select name="min_quality"><option value="">egal</option>
+      <% ['Basic', 'Standard', 'Premium'].forEach((q) => { %><option <%= prefs.min_quality === q ? 'selected' : '' %>><%= q %></option><% }) %></select></label>
+    <button class="btn primary">Speichern</button>
+  </form>
+</section>
+<%- include('../partials/footer') %>

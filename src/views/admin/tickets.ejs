@@ -1,0 +1,13 @@
+<%- include('../partials/header') %>
+<%- include('../partials/admin-nav') %>
+<h1>Support-Tickets</h1>
+<section class="panel">
+<table class="table">
+  <tr><th>#</th><th>Betreff</th><th>Kunde</th><th>Kategorie</th><th>Status</th><th>Erstellt</th></tr>
+  <% list.forEach((t) => { %>
+    <tr><td>#<%= t.id %></td><td><a href="/admin/tickets/<%= t.id %>"><%= t.subject %></a></td><td><%= t.customer %></td><td><%= t.category %></td>
+      <td><span class="status s-<%= t.status %>"><%= t.status %></span></td><td><%= date(t.created_at) %></td></tr>
+  <% }) %>
+</table>
+</section>
+<%- include('../partials/footer') %>

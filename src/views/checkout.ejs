@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+<h1><%= contract ? 'Vertrag ' + contract.contract_no + ' abrufen' : 'Kasse' %></h1>
+<% if (typeof error !== 'undefined') { %><div class="flash error"><%= error %></div><% } %>
+<form method="post" action="<%= action %>" class="grid product-detail">
+  <section class="panel form">
+    <% if (totals.needsAddress) { %>
+      <h3>Lieferadresse</h3>
+      <label>Adresse <input name="address" required value="<%= user.address || '' %>"></label>
+    <% } else { %>
+      <p class="flash info">Nur digitale Güter – keine Lieferadresse nötig. Lizenzschlüssel erhalten Sie direkt nach Zahlung.</p>
+    <% } %>
+    <h3>Zahlungsart</h3>
+    <% methods.forEach(([key, m], idx) => { %>
+      <label class="radio"><input type="radio" name="payment_method" value="<%= key %>" <%= idx === 0 ? 'checked' : '' %>> <%= m.label %></label>
+    <% }) %>
+    <% if (!methods.find(([k]) => k === 'rechnung')) { %><p class="small muted">Kauf auf Rechnung steht geprüften Geschäftskunden (beschränkter Markt) zur Verfügung.</p><% } %>
+    <fieldset class="cc">
+      <legend>Kreditkartendaten (nur bei Kreditkarte)</legend>
+      <label>Kartennummer <input name="card_number" placeholder="4111 1111 1111 1111"></label>
+      <p class="small muted">Testkarte: 4111 1111 1111 1111 (erfolgreich) · 4000 0000 0000 0002 wird vom Aussteller abgelehnt.</p>
+    </fieldset>
+  </section>
+  <aside class="panel">
+    <h3>Übersicht</h3>
+    <ul class="plain">
+      <% items.forEach((i) => { %><li><%= i.quantity %> × <%= i.product.name %> <span class="muted">(<%= eur(i.unit_price) %>)</span></li><% }) %>
+    </ul>
+    <%- include('partials/totals', { totals }) %>
+    <button class="btn primary block">Zahlungspflichtig bestellen</button>
+  </aside>
+</form>
+<%- include('partials/footer') %>

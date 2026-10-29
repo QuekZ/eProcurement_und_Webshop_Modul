@@ -1,0 +1,47 @@
+<%- include('../partials/header') %>
+<%- include('../partials/admin-nav') %>
+<h1><%= title %></h1>
+<% if (error) { %><div class="flash error"><%= error %></div><% } %>
+<% const specs = typeof product.specs === 'string' ? JSON.parse(product.specs || '{}') : (product.specs || {});
+   const specRows = [...Object.entries(specs), ['', ''], ['', ''], ['', '']]; %>
+<form method="post" action="/admin/produkte<%= product.id ? '/' + product.id : '' %>" class="panel form">
+  <div class="grid3">
+    <label>SKU <input name="sku" required value="<%= product.sku || '' %>"></label>
+    <label>Name <input name="name" required value="<%= product.name || '' %>"></label>
+    <label>Objekt-Klassifizierung <select name="object_type">
+      <% Object.entries(OBJECT_TYPES).forEach(([k, v]) => { %><option value="<%= k %>" <%= product.object_type === k ? 'selected' : '' %>><%= v %></option><% }) %></select></label>
+  </div>
+  <label>Beschreibung <textarea name="description" rows="3"><%= product.description || '' %></textarea></label>
+  <div class="grid3">
+    <label>Kategorie <select name="category_id"><option value="">–</option>
+      <% categories.forEach((c) => { %><option value="<%= c.id %>" <%= product.category_id == c.id ? 'selected' : '' %>><%= c.name %></option><% }) %></select></label>
+    <label>Lieferant <select name="supplier_id"><option value="">–</option>
+      <% suppliers.forEach((s) => { %><option value="<%= s.id %>" <%= product.supplier_id == s.id ? 'selected' : '' %>><%= s.name %></option><% }) %></select></label>
+    <label>Marktsegment <select name="access_level">
+      <% Object.entries(LEVEL_LABELS).forEach(([k, v]) => { %><option value="<%= k %>" <%= product.access_level === k ? 'selected' : '' %>><%= v %></option><% }) %></select></label>
+  </div>
+  <div class="grid3">
+    <label>Listenpreis (€) <input type="number" step="0.01" name="price" required value="<%= product.price || '' %>"></label>
+    <label>Preisuntergrenze für Verhandlung (€) <input type="number" step="0.01" name="min_price" value="<%= product.min_price || '' %>"></label>
+    <label class="check"><input type="checkbox" name="negotiable" value="1" <%= product.negotiable ? 'checked' : '' %>> verhandelbar</label>
+  </div>
+  <div class="grid3">
+    <label>Bestand <input type="number" name="stock" value="<%= product.stock ?? 0 %>"></label>
+    <label>Gewicht (kg) <input type="number" step="0.01" name="weight_kg" value="<%= product.weight_kg ?? 0 %>"></label>
+    <label>Lieferzeit (Tage) <input type="number" name="delivery_days" value="<%= product.delivery_days ?? 3 %>"></label>
+  </div>
+  <div class="grid3">
+    <label>Qualität <select name="quality">
+      <% ['Basic', 'Standard', 'Premium'].forEach((q) => { %><option <%= product.quality === q ? 'selected' : '' %>><%= q %></option><% }) %></select></label>
+    <label>Verwendungszweck <input name="usage_purpose" value="<%= product.usage_purpose || '' %>"></label>
+    <label class="check"><input type="checkbox" name="active" value="1" <%= product.active === undefined || product.active ? 'checked' : '' %>> aktiv</label>
+  </div>
+  <fieldset>
+    <legend>Spezifikationen</legend>
+    <% specRows.forEach(([k, v]) => { %>
+      <div class="grid2"><input name="spec_name" placeholder="Merkmal" value="<%= k %>"><input name="spec_value" placeholder="Wert" value="<%= v %>"></div>
+    <% }) %>
+  </fieldset>
+  <button class="btn primary">Speichern</button>
+</form>
+<%- include('../partials/footer') %>

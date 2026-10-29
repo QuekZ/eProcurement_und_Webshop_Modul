@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+<p class="small"><a href="/verhandlungen">← Verhandlungen</a></p>
+<h1>Verhandlung #<%= neg.id %> · <%= product.name %></h1>
+<div class="grid product-detail">
+  <section class="panel">
+    <h3>Verlauf</h3>
+    <div class="thread">
+      <% messages.forEach((m) => { %>
+        <div class="msg <%= m.author %>">
+          <div class="meta"><%= m.author === 'kunde' ? 'Ihr Angebot' : 'Anbieter' %> · <%= datetime(m.created_at) %></div>
+          <strong><%= eur(m.price) %> × <%= m.quantity %></strong>
+          <% if (m.message) { %><p><%= m.message %></p><% } %>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+  <aside class="panel">
+    <h3>Status: <span class="status s-<%= neg.status %>"><%= neg.status %></span></h3>
+    <table class="table small">
+      <tr><th>Listenpreis</th><td><%= eur(product.price) %></td></tr>
+      <tr><th>Aktueller Preis</th><td><%= eur(neg.current_price) %></td></tr>
+      <tr><th>Menge</th><td><%= neg.quantity %></td></tr>
+      <tr><th>Zahlung</th><td><%= neg.payment_terms %></td></tr>
+      <tr><th>Lieferung</th><td><%= neg.delivery_terms %></td></tr>
+      <tr><th>Runde</th><td><%= neg.rounds %> / <%= maxRounds %></td></tr>
+    </table>
+    <% if (neg.status === 'gegenangebot') { %>
+      <form method="post" action="/verhandlungen/<%= neg.id %>/annehmen"><button class="btn primary block">Gegenangebot annehmen (<%= eur(neg.current_price) %>)</button></form>
+      <h4>Neues Angebot</h4>
+      <form method="post" action="/verhandlungen/<%= neg.id %>/angebot" class="form">
+        <div class="grid2">
+          <label>Stückpreis <input type="number" step="0.01" name="price" required></label>
+          <label>Menge <input type="number" name="quantity" min="1" value="<%= neg.quantity %>"></label>
+        </div>
+        <label>Nachricht <textarea name="message" rows="2"></textarea></label>
+        <button class="btn block">Angebot senden</button>
+      </form>
+    <% } else if (contract) { %>
+      <p class="flash success">Einigung erzielt – Vertrag <strong><%= contract.contract_no %></strong> wurde erstellt.</p>
+      <a class="btn block" href="/verhandlungen/vertrag/<%= contract.id %>">Vertrag ansehen</a>
+      <% if (contract.status === 'aktiv') { %><a class="btn primary block" href="/verhandlungen/vertrag/<%= contract.id %>/abrufen">Vertrag abrufen (bestellen)</a><% } %>
+    <% } else if (neg.status === 'abgelehnt') { %>
+      <p class="flash error">Die Verhandlung wurde ohne Einigung beendet.</p>
+    <% } else { %>
+      <p class="muted">Ihr Angebot wird geprüft.</p>
+    <% } %>
+  </aside>
+</div>
+<%- include('partials/footer') %>

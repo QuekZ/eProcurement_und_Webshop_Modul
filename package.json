@@ -1,0 +1,26 @@
+{
+  "name": "eprocure-shop",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "reset": "node src/db/reset.js",
+    "test": "node --test test/"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "Lehr-Webshop für das Modul eProcurement und Webshops",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^11.10.0",
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "express-session": "^1.19.0",
+    "fast-xml-parser": "^5.11.2",
+    "knex": "^3.3.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

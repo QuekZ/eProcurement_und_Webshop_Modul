@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+<p class="small"><a href="/produkte">← Produkte</a> / <%= product.category_name %></p>
+<div class="grid product-detail">
+  <section class="panel">
+    <div class="tags">
+      <span class="tag type-<%= product.object_type %>"><%= OBJECT_TYPES[product.object_type] %></span>
+      <span class="tag level-<%= product.access_level %>"><%= LEVEL_LABELS[product.access_level] %>er Markt</span>
+      <% if (product.negotiable) { %><span class="tag nego">verhandelbar</span><% } %>
+    </div>
+    <h1><%= product.name %></h1>
+    <p><%= product.description %></p>
+
+    <h3>Produktinformationen</h3>
+    <table class="table">
+      <tr><th>Artikelnummer</th><td><%= product.sku %></td></tr>
+      <tr><th>Verwendungszweck</th><td><%= product.usage_purpose || '–' %></td></tr>
+      <tr><th>Qualität</th><td><%= product.quality %></td></tr>
+      <% Object.entries(product.specs).forEach(([k, v]) => { %><tr><th><%= k %></th><td><%= v %></td></tr><% }) %>
+      <tr><th>Abwicklung</th><td>
+        <% if (product.object_type === 'digital') { %>Lizenzschlüssel / Download sofort nach Zahlung, kein Versand
+        <% } else if (product.object_type === 'semi_digital') { %>Versand in <%= product.delivery_days %> Tagen + Lizenzschlüssel sofort nach Zahlung
+        <% } else { %>Versand in <%= product.delivery_days %> Tagen · <%= product.weight_kg %> kg · Bestand: <%= product.stock %><% } %>
+      </td></tr>
+    </table>
+
+    <h3>Marktteilnehmer</h3>
+    <table class="table">
+      <tr><th>Anbieter</th><td><a href="/partner/<%= supplier.id %>"><%= supplier.name %></a> <%= supplier.certified ? '✓ zertifiziert' : '' %></td></tr>
+      <tr><th>Adresse</th><td><%= supplier.street %>, <%= supplier.city %> (<%= supplier.country %>)</td></tr>
+      <tr><th>Bonität</th><td><%= supplier.credit_rating %> (Score <%= supplier.credit_score %>/100)</td></tr>
+      <tr><th>Referenzen</th><td><%= supplier.references_text %></td></tr>
+    </table>
+  </section>
+
+  <aside>
+    <div class="panel">
+      <div class="price big"><%= eur(product.price) %></div>
+      <p class="muted small">zzgl. Versand<%= product.object_type === 'digital' ? ' entfällt' : '' %></p>
+      <% if (match) { %>
+        <div class="match"><div class="bar"><span style="width: <%= match.score %>%"></span></div><span class="small"><%= match.score %> % Match</span></div>
+        <p class="small muted"><%= match.reasons.join(' · ') || 'Passt kaum zu Ihren Präferenzen' %></p>
+      <% } %>
+      <form method="post" action="/warenkorb/add" class="form">
+        <input type="hidden" name="product_id" value="<%= product.id %>">
+        <label>Menge <input type="number" name="quantity" value="1" min="1"></label>
+        <button class="btn primary block">In den Warenkorb</button>
+      </form>
+    </div>
+
+    <% if (product.negotiable) { %>
+    <div class="panel">
+      <h3>Preis verhandeln</h3>
+      <% if (!user) { %>
+        <p class="small"><a href="/login?next=/produkte/<%= product.id %>">Anmelden</a>, um ein Angebot abzugeben.</p>
+      <% } else { %>
+        <p class="small muted">Geben Sie ein Angebot ab. Unser Verhandlungsagent antwortet sofort; bei Einigung entsteht ein verbindlicher Vertrag.</p>
+        <form method="post" action="/verhandlungen" class="form">
+          <input type="hidden" name="product_id" value="<%= product.id %>">
+          <div class="grid2">
+            <label>Stückpreis (€) <input type="number" step="0.01" name="price" required value="<%= (product.price * 0.85).toFixed(2) %>"></label>
+            <label>Menge <input type="number" name="quantity" min="1" value="10"></label>
+          </div>
+          <label>Zahlungsbedingungen
+            <select name="payment_terms"><option>30 Tage netto</option><option>14 Tage 2 % Skonto</option><option>Vorkasse</option></select></label>
+          <label>Lieferbedingungen (Incoterms)
+            <select name="delivery_terms"><option>DAP (frei Haus)</option><option>EXW (ab Werk)</option><option>DDP (verzollt)</option></select></label>
+          <label>Nachricht <textarea name="message" rows="2"></textarea></label>
+          <button class="btn block">Angebot senden</button>
+        </form>
+      <% } %>
+    </div>
+    <% } %>
+  </aside>
+</div>
+
+<% if (related.length) { %>
+<section><h2>Ähnliche Produkte</h2>
+  <div class="grid cards"><% related.forEach((p) => { %><%- include('partials/product-card', { p }) %><% }) %></div>
+</section>
+<% } %>
+<%- include('partials/footer') %>

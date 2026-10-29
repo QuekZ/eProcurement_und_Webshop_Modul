@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+<%- include('../partials/admin-nav') %>
+<h1>Backoffice</h1>
+<div class="grid stats">
+  <div class="stat"><span><%= eur(stats.revenue) %></span>Umsatz</div>
+  <a class="stat" href="/admin/bestellungen"><span><%= stats.openOrders %></span>offene Bestellungen</a>
+  <a class="stat" href="/admin/verhandlungen"><span><%= stats.negotiations %></span>laufende Verhandlungen</a>
+  <a class="stat" href="/admin/tickets"><span><%= stats.tickets %></span>offene Tickets</a>
+  <a class="stat" href="/admin/nutzer"><span><%= stats.pendingUsers %></span>Zugangsanträge</a>
+  <a class="stat" href="/admin/produkte"><span><%= stats.dataQuality %> %</span>Datenqualität</a>
+</div>
+<div class="grid2">
+  <section class="panel">
+    <h2>Objekt-Klassifizierung</h2>
+    <table class="table">
+      <% Object.entries(OBJECT_TYPES).forEach(([k, v]) => { %>
+        <tr><td><span class="tag type-<%= k %>"><%= v %></span></td><td class="right"><%= stats.byType[k] || 0 %> Produkte</td></tr>
+      <% }) %>
+    </table>
+  </section>
+  <section class="panel">
+    <h2>Letzte EDI-Nachrichten</h2>
+    <%- include('edi-table', { messages: edi }) %>
+  </section>
+</div>
+<%- include('../partials/footer') %>

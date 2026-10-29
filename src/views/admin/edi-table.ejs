@@ -1,0 +1,9 @@
+<% if (!messages.length) { %><p class="muted">Noch keine Nachrichten.</p><% } else { %>
+<table class="table small">
+  <tr><th>Zeit</th><th>Richtung</th><th>Format</th><th>Typ</th><th>Referenz</th><th></th></tr>
+  <% messages.forEach((m) => { %>
+    <tr><td><%= datetime(m.created_at) %></td><td><%= m.direction === 'in' ? '⬇ ein' : '⬆ aus' %></td><td><%= m.format %></td><td><%= m.message_type %></td>
+      <td><%= m.reference %></td><td><a href="/admin/schnittstellen/nachricht/<%= m.id %>" target="_blank">anzeigen</a></td></tr>
+  <% }) %>
+</table>
+<% } %>

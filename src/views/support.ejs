@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+<h1>Kundenservice</h1>
+<div class="grid product-detail">
+  <section>
+    <div class="panel">
+      <h2>Häufige Fragen</h2>
+      <% faq.forEach(([q, a]) => { %><details class="faq"><summary><%= q %></summary><p><%= a %></p></details><% }) %>
+    </div>
+    <% if (user) { %>
+    <div class="panel">
+      <h2>Meine Anfragen</h2>
+      <% if (!tickets.length) { %><p class="muted">Keine Anfragen vorhanden.</p><% } %>
+      <table class="table">
+        <% tickets.forEach((t) => { %>
+          <tr><td><a href="/support/<%= t.id %>">#<%= t.id %> <%= t.subject %></a></td><td><%= t.category %></td><td><span class="status s-<%= t.status %>"><%= t.status %></span></td><td><%= date(t.created_at) %></td></tr>
+        <% }) %>
+      </table>
+    </div>
+    <% } %>
+  </section>
+  <aside class="panel">
+    <h2>Neue Anfrage</h2>
+    <% if (!user) { %><p><a href="/login?next=/support">Anmelden</a>, um ein Ticket zu eröffnen.</p><% } else { %>
+    <form method="post" action="/support" class="form">
+      <label>Kategorie <select name="category"><option>Produktfrage</option><option>Lieferung</option><option>Zahlung</option><option>Reklamation</option><option>Schnittstellen / EDI</option></select></label>
+      <label>Bezug zu Bestellung <select name="order_id"><option value="">–</option>
+        <% orders.forEach((o) => { %><option value="<%= o.id %>"><%= o.order_no %> (<%= STATUS_LABELS[o.status] %>)</option><% }) %></select></label>
+      <label>Betreff <input name="subject" required></label>
+      <label>Nachricht <textarea name="body" rows="5" required></textarea></label>
+      <button class="btn primary block">Absenden</button>
+    </form>
+    <% } %>
+  </aside>
+</div>
+<%- include('partials/footer') %>

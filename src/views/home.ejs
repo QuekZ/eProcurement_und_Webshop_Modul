@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+<section class="hero">
+  <div>
+    <h1>Elektronische Beschaffung für digitale, semi-digitale und physische Güter</h1>
+    <p>Produkte vergleichen, Preise verhandeln, Verträge abschließen und Lieferungen verfolgen – inklusive XML- und EDIFACT-Schnittstellen für Ihr ERP-System.</p>
+    <div class="actions">
+      <a class="btn primary" href="/produkte">Katalog durchsuchen</a>
+      <a class="btn" href="/partner">Marktpartner finden</a>
+    </div>
+  </div>
+  <div class="segments">
+    <% ['open', 'restricted', 'closed'].forEach((l) => { const ok = visible.includes(l); %>
+      <div class="segment level-<%= l %> <%= ok ? '' : 'locked' %>">
+        <strong><%= LEVEL_LABELS[l] %>er Markt</strong>
+        <span><%= segments[l] || 0 %> Produkte</span>
+        <small><%= ok ? 'freigeschaltet' : (l === 'restricted' ? 'für geprüfte Geschäftskunden' : 'nur auf Einladung') %></small>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<% if (user) { %>
+<section>
+  <div class="row-between"><h2>Für Sie empfohlen</h2><a href="/konto/praeferenzen">Präferenzen anpassen</a></div>
+  <% if (!hasPrefs) { %>
+    <p class="muted">Hinterlegen Sie <a href="/konto/praeferenzen">Einkaufspräferenzen</a>, damit wir passende Angebote für Sie matchen.</p>
+  <% } else if (!recommendations.length) { %>
+    <p class="muted">Aktuell passen keine Angebote zu Ihren Präferenzen.</p>
+  <% } else { %>
+    <div class="grid cards"><% recommendations.forEach((p) => { %><%- include('partials/product-card', { p }) %><% }) %></div>
+  <% } %>
+</section>
+<% } %>
+
+<section>
+  <h2>Sortiment</h2>
+  <div class="grid cards"><% featured.forEach((p) => { %><%- include('partials/product-card', { p }) %><% }) %></div>
+</section>
+
+<section class="grid three features">
+  <div class="panel"><h3>Digital</h3><p>Lizenzen &amp; Downloads – Schlüssel sofort nach Zahlung, keine Versandkosten.</p></div>
+  <div class="panel"><h3>Semi-digital</h3><p>Physischer Träger plus digitaler Zugang – Versand und Lizenzschlüssel.</p></div>
+  <div class="panel"><h3>Physisch</h3><p>Lagerware mit Bestandsführung, Versand und EDIFACT-Lieferavis (DESADV).</p></div>
+</section>
+<%- include('partials/footer') %>

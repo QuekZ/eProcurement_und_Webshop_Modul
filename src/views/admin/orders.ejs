@@ -1,0 +1,15 @@
+<%- include('../partials/header') %>
+<%- include('../partials/admin-nav') %>
+<h1>Bestellungen</h1>
+<section class="panel">
+<table class="table">
+  <tr><th>Nr.</th><th>Datum</th><th>Kunde</th><th>Kanal</th><th>Zahlung</th><th>Status</th><th class="right">Summe</th></tr>
+  <% list.forEach((o) => { %>
+  <tr><td><a href="/admin/bestellungen/<%= o.id %>"><%= o.order_no %></a></td><td><%= date(o.created_at) %></td><td><%= o.company || o.customer %></td>
+    <td><%= o.channel %></td><td><%= o.payment_method %> · <span class="status s-<%= o.payment_status %>"><%= o.payment_status %></span></td>
+    <td><span class="status s-<%= o.status %>"><%= STATUS_LABELS[o.status] %></span></td><td class="right"><%= eur(o.total) %></td></tr>
+  <% }) %>
+</table>
+<% if (!list.length) { %><p class="muted">Noch keine Bestellungen.</p><% } %>
+</section>
+<%- include('../partials/footer') %>

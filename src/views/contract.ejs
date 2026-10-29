@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+<p class="small"><a href="/verhandlungen">← Verhandlungen &amp; Verträge</a></p>
+<article class="panel contract">
+  <h1>Kaufvertrag <%= contract.contract_no %></h1>
+  <p class="muted">geschlossen am <%= date(contract.created_at) %> über die elektronische Verhandlung #<%= contract.negotiation_id %></p>
+  <div class="grid2">
+    <div><h4>Verkäufer</h4><p><%= product.supplier_name %><br><%= product.street %><br><%= product.city %> (<%= product.country %>)</p></div>
+    <div><h4>Käufer</h4><p><%= user.company || user.name %><br><%= user.address || '' %><% if (user.vat_id) { %><br>USt-IdNr. <%= user.vat_id %><% } %></p></div>
+  </div>
+  <h4>Vereinbarte Konditionen (Hard Facts)</h4>
+  <table class="table">
+    <tr><th>Vertragsgegenstand</th><td><%= product.name %> (<%= product.sku %>), <%= OBJECT_TYPES[product.object_type] %></td></tr>
+    <tr><th>Menge</th><td><%= contract.quantity %> Stück</td></tr>
+    <tr><th>Stückpreis</th><td><%= eur(contract.unit_price) %> (Listenpreis <%= eur(product.price) %>)</td></tr>
+    <tr><th>Gesamtpreis netto</th><td><strong><%= eur(contract.total) %></strong></td></tr>
+    <tr><th>Zahlungsbedingungen</th><td><%= contract.payment_terms %></td></tr>
+    <tr><th>Lieferbedingungen</th><td><%= contract.delivery_terms %></td></tr>
+    <tr><th>Liefertermin</th><td><%= date(contract.delivery_date) %></td></tr>
+    <tr><th>Status</th><td><span class="status s-<%= contract.status %>"><%= contract.status %></span></td></tr>
+  </table>
+  <p class="small muted">Der Vertrag kam durch übereinstimmende elektronische Willenserklärungen (Angebot und Annahme) zustande.</p>
+  <% if (contract.status === 'aktiv') { %><a class="btn primary" href="/verhandlungen/vertrag/<%= contract.id %>/abrufen">Vertrag abrufen</a><% } %>
+  <button class="btn" onclick="window.print()">Drucken</button>
+</article>
+<%- include('partials/footer') %>

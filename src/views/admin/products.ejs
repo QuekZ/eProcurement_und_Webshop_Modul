@@ -1,0 +1,20 @@
+<%- include('../partials/header') %>
+<%- include('../partials/admin-nav') %>
+<div class="row-between"><h1>Produktdaten</h1><a class="btn primary" href="/admin/produkte/neu">+ Neues Produkt</a></div>
+<section class="panel">
+<table class="table">
+  <tr><th>SKU</th><th>Name</th><th>Art</th><th>Markt</th><th>Preis</th><th>Bestand</th><th>Datenqualität</th><th>Zuletzt gepflegt</th></tr>
+  <% list.forEach((p) => { %>
+  <tr class="<%= p.active ? '' : 'inactive' %>">
+    <td><%= p.sku %></td><td><a href="/admin/produkte/<%= p.id %>"><%= p.name %></a></td>
+    <td><span class="tag type-<%= p.object_type %>"><%= OBJECT_TYPES[p.object_type] %></span></td>
+    <td><span class="tag level-<%= p.access_level %>"><%= LEVEL_LABELS[p.access_level] %></span></td>
+    <td><%= eur(p.price) %></td><td><%= p.object_type === 'digital' ? '∞' : p.stock %></td>
+    <td title="<%= p.quality_check.missing.length ? 'Fehlt: ' + p.quality_check.missing.join(', ') : 'vollständig' %>">
+      <div class="bar small-bar <%= p.quality_check.score < 80 ? 'warn' : '' %>"><span style="width: <%= p.quality_check.score %>%"></span></div> <%= p.quality_check.score %> %</td>
+    <td class="small"><%= p.editor || '–' %>, <%= date(p.updated_at) %></td>
+  </tr>
+  <% }) %>
+</table>
+</section>
+<%- include('../partials/footer') %>

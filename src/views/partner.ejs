@@ -1,0 +1,21 @@
+<%- include('partials/header') %>
+<p class="small"><a href="/partner">← Marktpartner</a></p>
+<section class="panel">
+  <div class="row-between"><h1><%= supplier.name %></h1><span class="rating r-<%= supplier.credit_rating %>"><%= supplier.credit_rating %></span></div>
+  <table class="table">
+    <tr><th>Adresse</th><td><%= supplier.street %>, <%= supplier.city %> (<%= supplier.country %>)</td></tr>
+    <tr><th>Kontakt</th><td><%= supplier.email %></td></tr>
+    <tr><th>Bonitätsauskunft</th><td><%= supplier.credit_rating %> · Score <%= supplier.credit_score %>/100</td></tr>
+    <tr><th>Branchen</th><td><%= supplier.industries %></td></tr>
+    <tr><th>Referenzen</th><td><%= supplier.references_text %></td></tr>
+    <tr><th>Zertifizierung</th><td><%= supplier.certified ? 'Ja' : 'Nein' %></td></tr>
+  </table>
+</section>
+<h2>Angebote dieses Partners</h2>
+<table class="table panel">
+  <tr><th>Produkt</th><th>Art</th><th>Qualität</th><th class="right">Preis</th></tr>
+  <% products.forEach((p) => { %>
+    <tr><td><a href="/produkte/<%= p.id %>"><%= p.name %></a></td><td><%= OBJECT_TYPES[p.object_type] %></td><td><%= p.quality %></td><td class="right"><%= eur(p.price) %></td></tr>
+  <% }) %>
+</table>
+<%- include('partials/footer') %>

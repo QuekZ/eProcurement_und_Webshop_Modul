@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+<h1>Marktpartnersuche</h1>
+<form class="panel filterbar" action="/partner">
+  <input name="q" placeholder="Name, Branche, Referenz …" value="<%= query.q || '' %>">
+  <select name="country"><option value="">Alle Länder</option>
+    <% countries.forEach((c) => { %><option <%= query.country === c ? 'selected' : '' %>><%= c %></option><% }) %></select>
+  <select name="min_score"><option value="">Jede Bonität</option>
+    <% [[80, 'Score ≥ 80 (sehr gut)'], [70, 'Score ≥ 70 (gut)'], [60, 'Score ≥ 60 (befriedigend)']].forEach(([v, l]) => { %>
+      <option value="<%= v %>" <%= query.min_score == v ? 'selected' : '' %>><%= l %></option><% }) %></select>
+  <label class="check"><input type="checkbox" name="certified" value="1" <%= query.certified ? 'checked' : '' %>> zertifiziert</label>
+  <button class="btn primary">Suchen</button>
+</form>
+<div class="grid cards">
+  <% suppliers.forEach((s) => { %>
+  <a class="card" href="/partner/<%= s.id %>">
+    <div class="row-between"><h3><%= s.name %></h3><span class="rating r-<%= s.credit_rating.replace(/\+/g, '') %>"><%= s.credit_rating %></span></div>
+    <p class="small muted"><%= s.city %>, <%= s.country %> · <%= s.industries %></p>
+    <p class="small">Referenzen: <%= s.references_text %></p>
+    <div class="row-between small"><span>Bonitätsscore <%= s.credit_score %>/100</span><span><%= s.product_count %> Produkte</span></div>
+    <% if (s.certified) { %><span class="tag nego">✓ zertifiziert</span><% } %>
+  </a>
+  <% }) %>
+</div>
+<% if (!suppliers.length) { %><p class="muted">Keine Marktpartner gefunden.</p><% } %>
+<%- include('partials/footer') %>

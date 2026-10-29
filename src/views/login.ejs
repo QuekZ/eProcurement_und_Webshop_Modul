@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+<section class="panel narrow">
+  <h1>Anmelden</h1>
+  <% if (typeof error !== 'undefined') { %><div class="flash error"><%= error %></div><% } %>
+  <form method="post" action="/login" class="form">
+    <input type="hidden" name="next" value="<%= next %>">
+    <label>E-Mail <input type="email" name="email" required autofocus></label>
+    <label>Passwort <input type="password" name="password" required></label>
+    <button class="btn primary">Anmelden</button>
+  </form>
+  <p class="muted">Noch kein Konto? <a href="/registrieren">Jetzt registrieren</a></p>
+  <details class="demo">
+    <summary>Demo-Zugänge</summary>
+    <table class="table small">
+      <tr><th>Rolle / Marktzugang</th><th>E-Mail</th><th>Passwort</th></tr>
+      <tr><td>Privatkunde (offen)</td><td>kunde@mail.de</td><td>kunde123</td></tr>
+      <tr><td>Geschäftskunde (beschränkt)</td><td>einkauf@mueller-gmbh.de</td><td>b2b123</td></tr>
+      <tr><td>Konsortialpartner (geschlossen)</td><td>partner@konsortium.de</td><td>partner123</td></tr>
+      <tr><td>Neukunde, Antrag offen</td><td>neu@start-up.de</td><td>neu123</td></tr>
+      <tr><td>Datenpflege</td><td>pflege@shop.de</td><td>pflege123</td></tr>
+      <tr><td>Administrator</td><td>admin@shop.de</td><td>admin123</td></tr>
+    </table>
+  </details>
+</section>
+<%- include('partials/footer') %>

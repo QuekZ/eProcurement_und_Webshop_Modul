@@ -1,0 +1,34 @@
+<%- include('../partials/header') %>
+<%- include('../partials/admin-nav') %>
+<p class="small"><a href="/admin/bestellungen">← Bestellungen</a></p>
+<h1>Bestellung <%= order.order_no %></h1>
+<p class="muted"><%= customer.company || customer.name %> · <%= customer.email %> · Kanal <%= order.channel %></p>
+<section class="panel"><%- include('../partials/order-timeline', { order }) %>
+  <form method="post" class="actions">
+    <% if (order.payment_status !== 'bezahlt' && order.status !== 'storniert') { %><button class="btn" name="action" value="paid">Zahlungseingang buchen</button><% } %>
+    <% if (order.status === 'in_kommissionierung') { %><button class="btn primary" name="action" value="ship">Versenden (DESADV senden)</button><% } %>
+    <% if (order.status === 'versandt') { %><button class="btn primary" name="action" value="deliver">Zustellung bestätigen</button><% } %>
+    <button class="btn" name="action" value="orders_edi">ORDERS an Lieferanten senden</button>
+    <% if (['neu', 'in_kommissionierung'].includes(order.status)) { %><button class="btn danger" name="action" value="cancel">Stornieren</button><% } %>
+  </form>
+</section>
+<div class="grid2">
+  <section class="panel">
+    <h3>Positionen</h3>
+    <table class="table">
+      <% order.items.forEach((i) => { %>
+        <tr><td><%= i.quantity %> × <%= i.name %></td><td><span class="tag type-<%= i.object_type %>"><%= OBJECT_TYPES[i.object_type] %></span></td>
+          <td><%= i.license_key ? i.license_key : '' %></td><td class="right"><%= eur(i.unit_price * i.quantity) %></td></tr>
+      <% }) %>
+      <tr class="sum"><td colspan="3">Gesamt inkl. <%= eur(order.shipping_cost) %> Versand</td><td class="right"><%= eur(order.total) %></td></tr>
+    </table>
+    <p class="small">Zahlung: <%= order.payment_method %> (<%= order.payment_ref %>) · <%= order.payment_status %><br>
+      Lieferadresse: <%= order.shipping_address || 'entfällt' %><br>
+      Sendung: <%= order.tracking_no ? order.carrier + ' ' + order.tracking_no : '–' %></p>
+  </section>
+  <section class="panel">
+    <h3>EDI-Nachrichten zu dieser Bestellung</h3>
+    <%- include('edi-table', { messages }) %>
+  </section>
+</div>
+<%- include('../partials/footer') %>

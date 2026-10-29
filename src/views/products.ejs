@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+<div class="layout-sidebar">
+  <aside class="panel filters">
+    <form action="/produkte">
+      <h3>Filter</h3>
+      <label>Suchbegriff <input name="q" value="<%= query.q || '' %>"></label>
+      <label>Kategorie
+        <select name="category"><option value="">Alle</option>
+          <% categories.forEach((c) => { %><option value="<%= c.id %>" <%= query.category == c.id ? 'selected' : '' %>><%= c.name %></option><% }) %>
+        </select></label>
+      <label>Güterart
+        <select name="type"><option value="">Alle</option>
+          <% Object.entries(OBJECT_TYPES).forEach(([k, v]) => { %><option value="<%= k %>" <%= query.type === k ? 'selected' : '' %>><%= v %></option><% }) %>
+        </select></label>
+      <label>Lieferant
+        <select name="supplier"><option value="">Alle</option>
+          <% suppliers.forEach((s) => { %><option value="<%= s.id %>" <%= query.supplier == s.id ? 'selected' : '' %>><%= s.name %></option><% }) %>
+        </select></label>
+      <label>Qualität
+        <select name="quality"><option value="">Alle</option>
+          <% ['Basic', 'Standard', 'Premium'].forEach((q) => { %><option <%= query.quality === q ? 'selected' : '' %>><%= q %></option><% }) %>
+        </select></label>
+      <div class="grid2">
+        <label>Preis ab <input type="number" name="min_price" value="<%= query.min_price || '' %>"></label>
+        <label>bis <input type="number" name="max_price" value="<%= query.max_price || '' %>"></label>
+      </div>
+      <label class="check"><input type="checkbox" name="negotiable" value="1" <%= query.negotiable ? 'checked' : '' %>> nur verhandelbar</label>
+      <label class="check"><input type="checkbox" name="in_stock" value="1" <%= query.in_stock ? 'checked' : '' %>> nur lieferbar</label>
+      <label>Sortierung
+        <select name="sort">
+          <% [['name', 'Name'], ['price_asc', 'Preis aufsteigend'], ['price_desc', 'Preis absteigend'], ['delivery', 'Lieferzeit']].forEach(([k, v]) => { %>
+            <option value="<%= k %>" <%= query.sort === k ? 'selected' : '' %>><%= v %></option><% }) %>
+        </select></label>
+      <button class="btn primary block">Anwenden</button>
+      <a class="small" href="/produkte">Zurücksetzen</a>
+    </form>
+  </aside>
+  <section>
+    <h1>Produkte <span class="muted small">(<%= products.length %> Treffer)</span></h1>
+    <% if (!products.length) { %><p class="muted">Keine Produkte gefunden.</p><% } %>
+    <div class="grid cards"><% products.forEach((p) => { %><%- include('partials/product-card', { p }) %><% }) %></div>
+  </section>
+</div>
+<%- include('partials/footer') %>

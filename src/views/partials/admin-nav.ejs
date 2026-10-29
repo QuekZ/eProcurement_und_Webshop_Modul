@@ -1,0 +1,12 @@
+<nav class="subnav">
+  <a href="/admin" class="<%= path === '/admin' ? 'active' : '' %>">Übersicht</a>
+  <a href="/admin/produkte" class="<%= path.startsWith('/admin/produkte') ? 'active' : '' %>">Produktdaten</a>
+  <a href="/admin/lieferanten" class="<%= path.startsWith('/admin/lieferanten') ? 'active' : '' %>">Lieferanten</a>
+  <a href="/admin/schnittstellen" class="<%= path.startsWith('/admin/schnittstellen') ? 'active' : '' %>">Schnittstellen</a>
+  <% if (user.role === 'admin') { %>
+    <a href="/admin/bestellungen" class="<%= path.startsWith('/admin/bestellungen') ? 'active' : '' %>">Bestellungen</a>
+    <a href="/admin/verhandlungen" class="<%= path.startsWith('/admin/verhandlungen') ? 'active' : '' %>">Verhandlungen</a>
+    <a href="/admin/tickets" class="<%= path.startsWith('/admin/tickets') ? 'active' : '' %>">Tickets</a>
+    <a href="/admin/nutzer" class="<%= path.startsWith('/admin/nutzer') ? 'active' : '' %>">Nutzer & Zugang</a>
+  <% } %>
+</nav>

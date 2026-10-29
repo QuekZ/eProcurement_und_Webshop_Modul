@@ -1,0 +1,5 @@
+<table class="table totals">
+  <tr><td>Zwischensumme</td><td class="right"><%= eur(totals.subtotal) %></td></tr>
+  <tr><td>Versand</td><td class="right"><%= totals.needsAddress ? eur(totals.shipping) : 'entfällt (digital)' %></td></tr>
+  <tr class="sum"><td>Gesamt</td><td class="right"><%= eur(totals.total) %></td></tr>
+</table>

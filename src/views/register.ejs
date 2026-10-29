@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+<section class="panel narrow">
+  <h1>Registrieren</h1>
+  <% if (typeof error !== 'undefined') { %><div class="flash error"><%= error %></div><% } %>
+  <form method="post" action="/registrieren" class="form">
+    <fieldset>
+      <legend>Kontoart &amp; Marktzugang</legend>
+      <label class="radio"><input type="radio" name="account_type" value="private" <%= form.account_type !== 'business' ? 'checked' : '' %>> Privatkunde – <em>offener Markt</em>, sofort aktiv</label>
+      <label class="radio"><input type="radio" name="account_type" value="business" <%= form.account_type === 'business' ? 'checked' : '' %>> Geschäftskunde – <em>beschränkter Markt</em> nach Prüfung von Firma &amp; USt-IdNr.</label>
+      <label>Einladungscode (optional, z. B. für den geschlossenen Konsortialmarkt)
+        <input name="invite_code" value="<%= form.invite_code || '' %>" placeholder="KONSORTIUM-2026"></label>
+    </fieldset>
+    <label>Name <input name="name" required value="<%= form.name || '' %>"></label>
+    <label>E-Mail <input type="email" name="email" required value="<%= form.email || '' %>"></label>
+    <label>Passwort <input type="password" name="password" minlength="6" required></label>
+    <div class="grid2">
+      <label>Firma <input name="company" value="<%= form.company || '' %>"></label>
+      <label>USt-IdNr. <input name="vat_id" value="<%= form.vat_id || '' %>"></label>
+    </div>
+    <label>Adresse <input name="address" value="<%= form.address || '' %>" placeholder="Straße Nr., PLZ Ort"></label>
+    <button class="btn primary">Konto anlegen</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

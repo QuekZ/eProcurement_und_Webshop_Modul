@@ -1,0 +1,16 @@
+<a class="card product-card" href="/produkte/<%= p.id %>">
+  <div class="tags">
+    <span class="tag type-<%= p.object_type %>"><%= OBJECT_TYPES[p.object_type] %></span>
+    <% if (p.access_level !== 'open') { %><span class="tag level-<%= p.access_level %>"><%= LEVEL_LABELS[p.access_level] %></span><% } %>
+    <% if (p.negotiable) { %><span class="tag nego">verhandelbar</span><% } %>
+  </div>
+  <h3><%= p.name %></h3>
+  <p class="muted small"><%= p.category_name %> · <%= p.supplier_name %></p>
+  <div class="row-between">
+    <strong class="price"><%= eur(p.price) %></strong>
+    <span class="muted small"><%= p.quality %></span>
+  </div>
+  <% if (p.match) { %>
+    <div class="match"><div class="bar"><span style="width: <%= p.match.score %>%"></span></div><span class="small"><%= p.match.score %> % Match</span></div>
+  <% } %>
+</a>

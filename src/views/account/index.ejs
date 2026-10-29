@@ -1,0 +1,21 @@
+<%- include('../partials/header') %>
+<h1>Mein Konto</h1>
+<p class="muted"><%= user.name %><%= user.company ? ' · ' + user.company : '' %> · Marktzugang <strong><%= LEVEL_LABELS[level] %></strong></p>
+<h2>Transaktionsstatus</h2>
+<div class="grid stats">
+  <a class="stat" href="/konto/bestellungen"><span><%= stats.orders %></span>Bestellungen</a>
+  <a class="stat" href="/konto/bestellungen"><span><%= stats.inDelivery %></span>in Lieferung</a>
+  <a class="stat" href="/verhandlungen"><span><%= stats.negotiations %></span>offene Verhandlungen</a>
+  <a class="stat" href="/verhandlungen"><span><%= stats.contracts %></span>aktive Verträge</a>
+  <a class="stat" href="/support"><span><%= stats.tickets %></span>offene Tickets</a>
+</div>
+<div class="grid three">
+  <a class="panel card" href="/konto/praeferenzen"><h3>Einkaufspräferenzen</h3><p class="small muted">Grundlage für das Matching von Angeboten.</p></a>
+  <a class="panel card" href="/konto/zugang"><h3>Marktzugang &amp; API</h3><p class="small muted">Zugang erweitern, API-Key für XML/EDIFACT.</p></a>
+  <a class="panel card" href="/support"><h3>Kundenservice</h3><p class="small muted">FAQ und Tickets.</p></a>
+</div>
+<section class="panel">
+  <h2>Letzte Bestellungen</h2>
+  <%- include('orders-table', { list: recentOrders }) %>
+</section>
+<%- include('../partials/footer') %>

@@ -1,0 +1,10 @@
+<% const steps = ['neu', 'bezahlt', 'in_kommissionierung', 'versandt', 'zugestellt'];
+   const shipping = order.items.some((i) => i.object_type !== 'digital');
+   const shown = shipping ? steps : ['neu', 'bezahlt', 'abgeschlossen'];
+   const reached = order.status === 'abgeschlossen' ? shown.length - 1
+     : Math.max(shown.indexOf(order.status), order.payment_status === 'bezahlt' ? 1 : 0); %>
+<% if (order.status === 'storniert') { %><p class="flash error">Bestellung storniert.</p><% } else { %>
+<ol class="timeline">
+  <% shown.forEach((s, i) => { %><li class="<%= i <= reached ? 'done' : '' %>"><%= STATUS_LABELS[s] %></li><% }) %>
+</ol>
+<% } %>

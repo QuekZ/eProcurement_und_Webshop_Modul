@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+<p class="small"><a href="/konto/bestellungen">← Bestellungen</a></p>
+<h1>Bestellung <%= order.order_no %></h1>
+<p class="muted">vom <%= date(order.created_at) %> · Kanal: <%= order.channel %><% if (contract) { %> · aus Vertrag <a href="/verhandlungen/vertrag/<%= contract.id %>"><%= contract.contract_no %></a><% } %></p>
+<section class="panel"><%- include('../partials/order-timeline', { order }) %></section>
+<div class="grid product-detail">
+  <section class="panel">
+    <h3>Positionen</h3>
+    <table class="table">
+      <tr><th>Produkt</th><th>Art</th><th>Menge</th><th>Preis</th><th>Lizenz / Zugang</th></tr>
+      <% order.items.forEach((i) => { %>
+      <tr>
+        <td><%= i.name %> <span class="muted small"><%= i.sku %></span></td>
+        <td><span class="tag type-<%= i.object_type %>"><%= OBJECT_TYPES[i.object_type] %></span></td>
+        <td><%= i.quantity %></td><td><%= eur(i.unit_price) %></td>
+        <td><% if (i.object_type === 'physical') { %><span class="muted">Versand</span>
+            <% } else if (i.license_key) { %><code><%= i.license_key %></code>
+            <% } else { %><span class="muted">nach Zahlungseingang</span><% } %></td>
+      </tr>
+      <% }) %>
+    </table>
+  </section>
+  <aside class="panel">
+    <h3>Abwicklung</h3>
+    <table class="table small">
+      <tr><th>Zahlungsart</th><td><%= order.payment_method %></td></tr>
+      <tr><th>Zahlungsstatus</th><td><span class="status s-<%= order.payment_status %>"><%= order.payment_status %></span></td></tr>
+      <tr><th>Zahlungsreferenz</th><td><%= order.payment_ref %></td></tr>
+      <% if (order.shipping_address) { %><tr><th>Lieferadresse</th><td><%= order.shipping_address %></td></tr><% } %>
+      <tr><th>Versand</th><td><%= order.tracking_no ? order.carrier + ' · ' + order.tracking_no : (order.shipping_address ? 'noch nicht versandt' : 'entfällt') %></td></tr>
+    </table>
+    <table class="table totals">
+      <tr><td>Zwischensumme</td><td class="right"><%= eur(order.subtotal) %></td></tr>
+      <tr><td>Versand</td><td class="right"><%= eur(order.shipping_cost) %></td></tr>
+      <tr class="sum"><td>Gesamt</td><td class="right"><%= eur(order.total) %></td></tr>
+    </table>
+    <% if (order.payment_method === 'vorkasse' && order.payment_status === 'offen') { %>
+      <p class="flash info small">Bitte überweisen Sie <%= eur(order.total) %> mit Verwendungszweck <strong><%= order.payment_ref %></strong>.</p>
+    <% } %>
+    <a class="btn block" href="/support">Frage zur Bestellung?</a>
+  </aside>
+</div>
+<%- include('../partials/footer') %>

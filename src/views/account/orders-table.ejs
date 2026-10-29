@@ -1,0 +1,14 @@
+<% if (!list.length) { %><p class="muted">Noch keine Bestellungen.</p><% } else { %>
+<table class="table">
+  <tr><th>Nr.</th><th>Datum</th><th>Kanal</th><th>Zahlung</th><th>Status</th><th>Sendung</th><th class="right">Summe</th></tr>
+  <% list.forEach((o) => { %>
+  <tr>
+    <td><a href="/konto/bestellungen/<%= o.id %>"><%= o.order_no %></a></td><td><%= date(o.created_at) %></td><td><%= o.channel %></td>
+    <td><span class="status s-<%= o.payment_status %>"><%= o.payment_status %></span></td>
+    <td><span class="status s-<%= o.status %>"><%= STATUS_LABELS[o.status] %></span></td>
+    <td class="small"><%= o.tracking_no ? o.carrier + ' ' + o.tracking_no : '–' %></td>
+    <td class="right"><%= eur(o.total) %></td>
+  </tr>
+  <% }) %>
+</table>
+<% } %>

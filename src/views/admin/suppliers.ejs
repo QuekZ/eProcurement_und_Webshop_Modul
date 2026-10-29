@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+<%- include('../partials/admin-nav') %>
+<h1>Lieferanten / Marktteilnehmer</h1>
+<section class="panel">
+<table class="table">
+  <tr><th>Name</th><th>Ort</th><th>Bonität</th><th>Branchen</th><th>Referenzen</th><th>Zert.</th></tr>
+  <% list.forEach((s) => { %>
+    <tr><td><a href="/partner/<%= s.id %>"><%= s.name %></a></td><td><%= s.city %> (<%= s.country %>)</td><td><%= s.credit_rating %> / <%= s.credit_score %></td>
+      <td><%= s.industries %></td><td class="small"><%= s.references_text %></td><td><%= s.certified ? '✓' : '' %></td></tr>
+  <% }) %>
+</table>
+</section>
+<form method="post" class="panel form">
+  <h2>Neuen Lieferanten anlegen</h2>
+  <div class="grid3">
+    <label>Name <input name="name" required></label>
+    <label>Straße <input name="street"></label>
+    <label>Ort <input name="city"></label>
+    <label>Land (ISO) <input name="country" maxlength="2" value="DE"></label>
+    <label>E-Mail <input type="email" name="email"></label>
+    <label>Branchen <input name="industries"></label>
+    <label>Rating <select name="credit_rating"><% ['AAA', 'AA', 'A', 'BBB', 'BB', 'B'].forEach((r) => { %><option><%= r %></option><% }) %></select></label>
+    <label>Bonitätsscore (0–100) <input type="number" name="credit_score" min="0" max="100"></label>
+    <label class="check"><input type="checkbox" name="certified" value="1"> zertifiziert</label>
+  </div>
+  <label>Referenzen <input name="references_text"></label>
+  <button class="btn primary">Anlegen</button>
+</form>
+<%- include('../partials/footer') %>

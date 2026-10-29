@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+<%- include('../partials/admin-nav') %>
+<h1>Nutzer &amp; Marktzugang</h1>
+<section class="panel">
+<table class="table">
+  <tr><th>Name</th><th>Firma / USt-IdNr.</th><th>Zugang</th><th>Antrag</th><th>Rolle &amp; Zugang ändern</th></tr>
+  <% list.forEach((u) => { %>
+  <tr class="<%= u.approved ? '' : 'highlight' %>">
+    <td><%= u.name %><br><span class="small muted"><%= u.email %></span></td>
+    <td><%= u.company || '–' %><br><span class="small muted"><%= u.vat_id || '' %></span></td>
+    <td><span class="tag level-<%= u.access_level %>"><%= LEVEL_LABELS[u.access_level] %></span></td>
+    <td><% if (!u.approved) { %>
+      <span class="small">möchte <strong><%= LEVEL_LABELS[u.requested_level] %></strong></span>
+      <form method="post" action="/admin/nutzer/<%= u.id %>" class="inline">
+        <button class="btn small primary" name="action" value="approve">Freigeben</button>
+        <button class="btn small" name="action" value="reject">Ablehnen</button>
+      </form>
+    <% } else { %>–<% } %></td>
+    <td>
+      <form method="post" action="/admin/nutzer/<%= u.id %>" class="inline">
+        <select name="role"><% ['customer', 'datapfleger', 'admin'].forEach((r) => { %><option <%= u.role === r ? 'selected' : '' %>><%= r %></option><% }) %></select>
+        <select name="access_level"><% Object.entries(LEVEL_LABELS).forEach(([k, v]) => { %><option value="<%= k %>" <%= u.access_level === k ? 'selected' : '' %>><%= v %></option><% }) %></select>
+        <button class="btn small" name="action" value="update">Speichern</button>
+      </form>
+    </td>
+  </tr>
+  <% }) %>
+</table>
+</section>
+<section class="panel">
+  <h2>Einladungscodes</h2>
+  <table class="table">
+    <tr><th>Code</th><th>Zugang</th><th>Eingelöst von</th></tr>
+    <% invites.forEach((i) => { %><tr><td><code><%= i.code %></code></td><td><%= LEVEL_LABELS[i.access_level] %></td><td><%= i.used_by_email || '–' %></td></tr><% }) %>
+  </table>
+  <form method="post" action="/admin/einladungen" class="inline">
+    <select name="access_level"><option value="closed">Geschlossen</option><option value="restricted">Beschränkt</option></select>
+    <button class="btn">Code erzeugen</button>
+  </form>
+</section>
+<%- include('../partials/footer') %>
